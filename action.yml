@@ -1,0 +1,148 @@
+name: JSON Validation
+description: Validates JSON data against a schema.
+inputs:
+  strict:
+    description: "https://ajv.js.org/options.html#strict"
+    required: false
+  strictSchema:
+    description: "https://ajv.js.org/options.html#strictschema"
+    required: false
+  strictNumbers:
+    description: "https://ajv.js.org/options.html#strictnumbers"
+    required: false
+  strictTypes:
+    description: "https://ajv.js.org/options.html#stricttypes"
+    required: false
+  strictTuples:
+    description: "https://ajv.js.org/options.html#stricttuples"
+    required: false
+  strictRequired:
+    description: "https://ajv.js.org/options.html#strictrequired"
+    required: false
+  allowUnionTypes:
+    description: "https://ajv.js.org/options.html#allowuniontypes"
+    required: false
+  allowMatchingProperties:
+    description: "https://ajv.js.org/options.html#allownatchingproperties"
+    required: false
+  validateFormats:
+    description: "https://ajv.js.org/options.html#validateformats"
+    required: false
+  $data:
+    description: "#https://ajv.js.org/options.html#data"
+    required: false
+  allErrors:
+    description: "https://ajv.js.org/options.html#allerrors"
+    required: false
+  verbose:
+    description: "https://ajv.js.org/options.html#verbose"
+    required: false
+  discriminator:
+    description: "https://ajv.js.org/options.html#discriminator"
+    required: false
+  unicodeRegExp:
+    description: "https://ajv.js.org/options.html#unicoderegexp"
+    required: false
+  timestamp:
+    description: "https://ajv.js.org/options.html#timestamp"
+    required: false
+  parseDate:
+    description: "https://ajv.js.org/options.html#parsedate"
+    required: false
+  allowDate:
+    description: "https://ajv.js.org/options.html#allowdate"
+    required: false
+  int32range:
+    description: "https://ajv.js.org/options.html#int32range"
+    required: false
+  $comment:
+    description: "#https://ajv.js.org/options.html#comment"
+    required: false
+  formats:
+    description: "https://ajv.js.org/options.html#formats"
+    required: false
+  keywords:
+    description: "https://ajv.js.org/options.html#keywords"
+    required: false
+  schemas:
+    description: "https://ajv.js.org/options.html#schemas"
+    required: false
+  logger:
+    description: "https://ajv.js.org/options.html#logger"
+    required: false
+  loadSchema:
+    description: "https://ajv.js.org/options.html#loadschema"
+    required: false
+  removeAdditional:
+    description: "https://ajv.js.org/options.html#removeadditional"
+    required: false
+  useDefaults:
+    description: "https://ajv.js.org/options.html#usedefaults"
+    required: false
+  coerceTypes:
+    description: "https://ajv.js.org/options.html#coercetypes"
+    required: false
+  meta:
+    description: "https://ajv.js.org/options.html#meta"
+    required: false
+  validateSchema:
+    description: "https://ajv.js.org/options.html#validateschema"
+    required: false
+  addUsedSchema:
+    description: "https://ajv.js.org/options.html#addusedschema"
+    required: false
+  inlineRefs:
+    description: "https://ajv.js.org/options.html#inlinerefs"
+    required: false
+  passContext:
+    description: "https://ajv.js.org/options.html#passcontext"
+    required: false
+  loopRequired:
+    description: "https://ajv.js.org/options.html#looprequired"
+    required: false
+  loopEnum:
+    description: "https://ajv.js.org/options.html#loopenum"
+    required: false
+  ownProperties:
+    description: "https://ajv.js.org/options.html#ownproperties"
+    required: false
+  multipleOfPrecision:
+    description: "https://ajv.js.org/options.html#multipleOfprecision"
+    required: false
+  messages:
+    description: "https://ajv.js.org/options.html#messages"
+    required: false
+  uriResolver:
+    description: "https://ajv.js.org/options.html#uriresolver"
+    required: false
+  codeEs5:
+    description: "https://ajv.js.org/options.html#code"
+    required: false
+  codeEsm:
+    description: "https://ajv.js.org/options.html#code"
+    required: false
+  codeLines:
+    description: "https://ajv.js.org/options.html#code"
+    required: false
+  codeSource:
+    description: "https://ajv.js.org/options.html#code"
+    required: false
+  codeProcess:
+    description: "https://ajv.js.org/options.html#code"
+    required: false
+  codeOptimize:
+    description: "https://ajv.js.org/options.html#code"
+    required: false
+  codeRegExp:
+    description: "https://ajv.js.org/options.html#code"
+    required: false
+
+outputs:
+  result:
+    description: The result of the validation.
+branding:
+  icon: check-circle
+  color: green
+runs:
+  using: node20
+  main: dist/index.js
