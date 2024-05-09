@@ -28,7 +28,7 @@ inputs:
   validateFormats:
     description: "https://ajv.js.org/options.html#validateformats"
     required: false
-  $data:
+  data:
     description: "#https://ajv.js.org/options.html#data"
     required: false
   allErrors:
@@ -55,7 +55,7 @@ inputs:
   int32range:
     description: "https://ajv.js.org/options.html#int32range"
     required: false
-  $comment:
+  comment:
     description: "#https://ajv.js.org/options.html#comment"
     required: false
   formats:
