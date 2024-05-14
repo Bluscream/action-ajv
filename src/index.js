@@ -28,7 +28,7 @@ async function validate() {
 
     const options = {
       $data: data,
-      schemas: schemas,
+      // schemas: schemas,
       strict: utils.parseInput("strict", "Boolean", "String"),
       strictSchema: utils.parseInput("strictSchema", "Boolean", "String"),
       strictNumbers: utils.parseInput("strictNumbers", "Boolean"),
@@ -44,7 +44,7 @@ async function validate() {
 
     const ajv = new Ajv(options);
 
-    const validate = ajv.compile(schema);
+    const validate = ajv.compile(schemas);
     const valid = validate(data);
 
     if (!valid) {
