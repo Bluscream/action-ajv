@@ -37586,14 +37586,14 @@ async function loadData(pathOrData) {
 
 async function validate() {
   try {
-    const [data, schema] = await Promise.all([
-      loadData(utils.parseInput("data", "String")),
-      loadData(utils.parseInput("schema", "String")),
+    const [data, schemas] = await Promise.all([
+      loadData(utils.parseInput("data", "String")[0]),
+      loadData(utils.parseInput("schema", "String")[0]),
     ]);
 
     const options = {
       $data: data,
-      schemas: schema,
+      schemas: schemas,
       strict: utils.parseInput("strict", "Boolean", "String"),
       strictSchema: utils.parseInput("strictSchema", "Boolean", "String"),
       strictNumbers: utils.parseInput("strictNumbers", "Boolean"),
