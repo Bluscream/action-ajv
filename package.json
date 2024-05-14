@@ -1,0 +1,33 @@
+{
+  "name": "action-ajv",
+  "version": "1.0.0",
+  "description": "GitHub action to validate JSON against a schema using Ajv.",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ammarlakis/action-ajv.git"
+  },
+  "keywords": [
+    "github",
+    "action",
+    "ajv",
+    "json",
+    "schema",
+    "validation"
+  ],
+  "author": "Ammar Lakis <ammar.lakis@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ammarlakis/action-ajv/issues"
+  },
+  "homepage": "https://github.com/ammarlakis/action-ajv#readme",
+  "dependencies": {
+    "@actions/core": "^1.10.1",
+    "@gh-actions-utils/inputs": "github:ammarlakis/github-actions-utils",
+    "ajv": "^8.13.0",
+    "glob-promise": "^6.0.5"
+  }
+}
