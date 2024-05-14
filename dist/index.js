@@ -37572,15 +37572,11 @@ const utils = __nccwpck_require__(3510);
 
 async function loadData(pathOrData) {
   try {
-    if (/^[\{\]]/.test(pathOrData)) {
-      return JSON.parse(pathOrData);
-    } else {
-      const files = await glob(pathOrData);
-      const data = await Promise.all(
-        files.map((file) => fs.readFile(file, "utf8"))
-      );
-      return data.map(JSON.parse);
-    }
+    const files = await glob(pathOrData);
+    const data = await Promise.all(
+      files.map((file) => fs.readFile(file, "utf8"))
+    );
+    return data.map(JSON.parse);
   } catch (error) {
     core.setFailed(`Error loading data: ${error.message}`);
     throw error;
