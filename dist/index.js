@@ -37572,7 +37572,7 @@ const utils = __nccwpck_require__(3510);
 
 async function loadData(pathOrData) {
   try {
-    if (pathOrData.startsWith("{") || pathOrData.startsWith("[")) {
+    if (/^[\{\]]/.test(pathOrData)) {
       return JSON.parse(pathOrData);
     } else {
       const files = await glob(pathOrData);
