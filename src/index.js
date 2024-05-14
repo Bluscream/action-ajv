@@ -29,7 +29,7 @@ async function validate() {
     const ajv = new Ajv();
     core.info("new instance created");
     core.info("schema is" + JSON.stringify(schemas) );
-    const validate = ajv.compile(schemas);
+    const validate = ajv.compile(schemas[0]);
     core.info("schema read");
     core.info("data is " + JSON.stringify(data));
     const valid = validate(data);
