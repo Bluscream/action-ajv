@@ -46016,7 +46016,7 @@ async function validate() {
   try {
     const [data, schemas] = await Promise.all([
       loadData(utils.parseInput("data", "String")[0]),
-      loadData(utils.parseInput("schema", "String")[0]),
+      loadData(utils.parseInput("schemas", "String")[0]),
     ]);
 
     const options = {
