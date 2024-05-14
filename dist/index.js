@@ -1845,6 +1845,7 @@ function parseInput(inputName, ...types) {
   const input = core.getInput(inputName);
   for (const type of types) {
     const _type = type.toLowerCase()
+    core.info(_type);
     switch (_type) {
       case 'number':
         const number = parseFloat(input);
