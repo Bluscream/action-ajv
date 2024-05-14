@@ -21,24 +21,24 @@ async function loadData(pathOrData) {
 async function validate() {
   try {
     const [data, schema] = await Promise.all([
-      loadData(utils.parseInput("data")),
-      loadData(utils.parseInput("schema")),
+      loadData(utils.parseInput("data", "String")),
+      loadData(utils.parseInput("schema", "String")),
     ]);
 
     const options = {
       $data: data,
       schemas: schema,
-      strict: utils.parseInput("strict", Boolean, String),
-      strictSchema: utils.parseInput("strictSchema", Boolean, String),
-      strictNumbers: utils.parseInput("strictNumbers", Boolean),
-      strictTypes: utils.parseInput("strictTypes", Boolean, String),
-      strictTuples: utils.parseInput("strictTuples", Boolean, String),
-      strictRequired: utils.parseInput("strictRequired", Boolean, String),
-      allowUnionTypes: utils.parseInput("allowUnionTypes", Boolean),
-      allowMatchingProperties: utils.parseInput("allowMatchingProperties", Boolean),
-      validateFormats: utils.parseInput("validateFormats", Boolean),
-      allErrors: utils.parseInput("allErrors", Boolean),
-      verbose: utils.parseInput("verbose", Boolean),
+      strict: utils.parseInput("strict", "Boolean", "String"),
+      strictSchema: utils.parseInput("strictSchema", "Boolean", "String"),
+      strictNumbers: utils.parseInput("strictNumbers", "Boolean"),
+      strictTypes: utils.parseInput("strictTypes", "Boolean", "String"),
+      strictTuples: utils.parseInput("strictTuples", "Boolean", "String"),
+      strictRequired: utils.parseInput("strictRequired", "Boolean", "String"),
+      allowUnionTypes: utils.parseInput("allowUnionTypes", "Boolean"),
+      allowMatchingProperties: utils.parseInput("allowMatchingProperties", "Boolean"),
+      validateFormats: utils.parseInput("validateFormats", "Boolean"),
+      allErrors: utils.parseInput("allErrors", "Boolean"),
+      verbose: utils.parseInput("verbose", "Boolean"),
     };
 
     const ajv = new Ajv(options);
