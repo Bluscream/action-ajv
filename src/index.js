@@ -1,5 +1,6 @@
 const core = require("@actions/core");
 const Ajv = require("ajv");
+const addFormats = require("ajv-formats");
 const { promises: fs } = require("fs");
 const glob = require("glob-promise");
 const utils = require("@gh-actions-utils/inputs");
@@ -27,6 +28,7 @@ async function validate() {
     ]);
 
     const ajv = new Ajv();
+    addFormats(ajv);
     core.info("new instance created");
     core.info("schema is" + JSON.stringify(schemas) );
     const validate = ajv.compile(schemas[0]);
