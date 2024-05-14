@@ -3,6 +3,7 @@ const Ajv = require("ajv");
 const { promises: fs } = require("fs");
 const glob = require("glob-promise");
 const utils = require("@gh-actions-utils/inputs");
+const yaml = require("yaml")
 
 async function loadData(pathOrData) {
   core.info(pathOrData);
@@ -11,11 +12,15 @@ async function loadData(pathOrData) {
     const data = await Promise.all(
       files.map((file) => fs.readFile(file, "utf8"))
     );
-    return data.map(JSON.parse);
+    const result = await data.map(JSON.parse);
+    if (!result) {
+      result = await data.map(yaml.parse)
+    }
   } catch (error) {
     core.setFailed(`Error loading data: ${error.message}`);
     throw error;
   }
+  return result;
 }
 
 async function validate() {
