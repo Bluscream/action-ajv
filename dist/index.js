@@ -46020,7 +46020,7 @@ async function validate() {
     ]);
 
     const options = {
-      $data: data,
+      // $data: data,
       // schemas: schemas,
       strict: utils.parseInput("strict", "Boolean", "String"),
       strictSchema: utils.parseInput("strictSchema", "Boolean", "String"),
@@ -46038,6 +46038,8 @@ async function validate() {
     const ajv = new Ajv(options);
 
     const validate = ajv.compile(schemas);
+    core.info("schema read");
+    core.info("data is " + JSON.stringify(data));
     const valid = validate(data);
 
     if (!valid) {
