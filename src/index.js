@@ -42,7 +42,7 @@ async function validate() {
       verbose: utils.parseInput("verbose", "Boolean"),
     };
 
-    const ajv = new Ajv(options);
+    const ajv = new Ajv();
 
     const validate = ajv.compile(schemas);
     core.info("schema read");
