@@ -37571,6 +37571,7 @@ const glob = __nccwpck_require__(5608);
 const utils = __nccwpck_require__(3510);
 
 async function loadData(pathOrData) {
+  core.debug(pathOrData);
   try {
     const files = await glob(pathOrData);
     const data = await Promise.all(
