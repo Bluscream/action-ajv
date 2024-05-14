@@ -3,6 +3,7 @@ const Ajv = require("ajv");
 const { promises: fs } = require("fs");
 const glob = require("glob-promise");
 const utils = require("@gh-actions-utils/inputs");
+const yaml = require("yaml")
 
 async function loadData(pathOrData) {
   core.info(pathOrData);
