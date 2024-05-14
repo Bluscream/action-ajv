@@ -46362,7 +46362,7 @@ async function validate() {
     const validate = ajv.compile(schemas[0]);
     core.info("schema read");
     core.info("data is " + JSON.stringify(data));
-    const valid = validate(data);
+    const valid = validate(data[0]);
 
     if (!valid) {
       core.setFailed(`Validation errors: ${JSON.stringify(validate.errors)}`);
