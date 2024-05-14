@@ -5,7 +5,7 @@ const glob = require("glob-promise");
 const utils = require("@gh-actions-utils/inputs");
 
 async function loadData(pathOrData) {
-  core.debug(pathOrData);
+  core.info(pathOrData);
   try {
     const files = await glob(pathOrData);
     const data = await Promise.all(
