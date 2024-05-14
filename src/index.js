@@ -26,24 +26,9 @@ async function validate() {
       loadData(utils.parseInput("schemas", "String")[0]),
     ]);
 
-    const options = {
-      // $data: data,
-      // schemas: schemas,
-      strict: utils.parseInput("strict", "Boolean", "String"),
-      strictSchema: utils.parseInput("strictSchema", "Boolean", "String"),
-      strictNumbers: utils.parseInput("strictNumbers", "Boolean"),
-      strictTypes: utils.parseInput("strictTypes", "Boolean", "String"),
-      strictTuples: utils.parseInput("strictTuples", "Boolean", "String"),
-      strictRequired: utils.parseInput("strictRequired", "Boolean", "String"),
-      allowUnionTypes: utils.parseInput("allowUnionTypes", "Boolean"),
-      allowMatchingProperties: utils.parseInput("allowMatchingProperties", "Boolean"),
-      validateFormats: utils.parseInput("validateFormats", "Boolean"),
-      allErrors: utils.parseInput("allErrors", "Boolean"),
-      verbose: utils.parseInput("verbose", "Boolean"),
-    };
-
     const ajv = new Ajv();
-
+    core.info("new instance created");
+    core.info("schema is" + JSON.stringify(schemas) );
     const validate = ajv.compile(schemas);
     core.info("schema read");
     core.info("data is " + JSON.stringify(data));
