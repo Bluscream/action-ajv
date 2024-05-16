@@ -23,14 +23,14 @@ async function loadData(pathOrData) {
 async function validate() {
   try {
     const [data, schemas] = await Promise.all([
-      loadData(utils.parseInput("data", "String")[0]),
-      loadData(utils.parseInput("schemas", "String")[0]),
+      loadData(utils.parseInput("data", "String").value),
+      loadData(utils.parseInput("schemas", "String").value),
     ]);
 
     const ajv = new Ajv();
     addFormats(ajv);
-    const validate = ajv.compile(schemas[0]);
-    const valid = validate(data[0]);
+    const validate = ajv.compile(schemas.value);
+    const valid = validate(data.value);
 
     if (!valid) {
       core.setFailed(`Validation errors: ${JSON.stringify(validate.errors)}`);
