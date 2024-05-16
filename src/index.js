@@ -6,14 +6,16 @@ const glob = require("glob-promise");
 const utils = require("@gh-actions-utils/inputs");
 const jsyaml = require("js-yaml");
 
-async function loadData(pathOrData) {
-  core.info(pathOrData);
+async function loadFiles(pathOrData) {
   try {
     const files = await glob(pathOrData);
     const data = await Promise.all(
-      files.map((file) => fs.readFile(file, "utf8"))
+      files.map(async (file) => {
+        const contents = await fs.readFile(file, "utf8");
+        return {filename: file, contents: jsyaml.load(contents)}
+      })
     );
-    return data.map(jsyaml.load);
+    return data;
   } catch (error) {
     core.setFailed(`Error loading data: ${error.message}`);
     throw error;
@@ -23,21 +25,28 @@ async function loadData(pathOrData) {
 async function validate() {
   try {
     const [data, schemas] = await Promise.all([
-      loadData(utils.parseInput("data", "String").value),
-      loadData(utils.parseInput("schemas", "String").value),
+      loadFiles(utils.parseInput("data", "String").value),
+      loadFiles(utils.parseInput("schemas", "String").value),
     ]);
 
     const ajv = new Ajv();
     addFormats(ajv);
-    const validate = ajv.compile(schemas.value);
-    const valid = validate(data.value);
+    const validate = ajv.compile(schemas[0].contents);
+    const validationArray = data.map((file) => {
+      validate(file.contents);
+      return {
+        filename: file.filename,
+        errors: validate.errors
+      }
+    });
 
-    if (!valid) {
-      core.setFailed(`Validation errors: ${JSON.stringify(validate.errors)}`);
+    if (!validationArray.every((validation) => validation.errors == null)) {
+      core.setFailed(`Validation errors: ${JSON.stringify(validationArray.filter((validation) => validation.errors != null))}`);
       core.setOutput("valid", false);
       core.setOutput("errors", JSON.stringify(validate.errors));
     } else {
       core.setOutput("valid", true);
+      core.info("Validation successful!")
     }
   } catch (error) {
     core.setFailed(`Failed to validate: ${error.message}`);

@@ -1854,7 +1854,7 @@ function Input(type, value) {
 /**
  *
  * @param {string} inputName The name of the input to fetch.
- * @param {...type} types The type to test the input against.
+ * @param {...string} types The type to test the input against.
  * @returns {Input} The Input object.
  */
 function parseInput(inputName, ...types) {
@@ -1864,30 +1864,30 @@ function parseInput(inputName, ...types) {
     switch (_type) {
       case "number":
         const number = parseFloat(input);
-        if (!isNaN(number)) Input(_type, number);
+        if (!isNaN(number)) return Input(_type, number);
         break;
       case "boolean":
         const lowerInput = input.toLowerCase();
-        if (lowerInput === "true") Input(_type, true);
-        if (lowerInput === "false") Input(_type, false);
+        if (lowerInput === "true") return Input(_type, true);
+        if (lowerInput === "false") return Input(_type, false);
         break;
       case "date":
         const date = new Date(input);
-        if (!isNaN(date.getTime())) Input(_type, date);
+        if (!isNaN(date.getTime())) return Input(_type, date);
         break;
       case "json":
         try {
-          Input(_type, JSON.parse(input));
+          return Input(_type, JSON.parse(input));
         } catch {}
         break;
       case "string":
-        Input(_type, input);
+        return Input(_type, input);
         break;
       default:
         core.warning(`Unsupported type: ${type}`);
     }
   }
-  null;
+  return null;
 }
 
 module.exports = {
@@ -42030,14 +42030,16 @@ const glob = __nccwpck_require__(5608);
 const utils = __nccwpck_require__(3510);
 const jsyaml = __nccwpck_require__(661);
 
-async function loadData(pathOrData) {
-  core.info(pathOrData);
+async function loadFiles(pathOrData) {
   try {
     const files = await glob(pathOrData);
     const data = await Promise.all(
-      files.map((file) => fs.readFile(file, "utf8"))
+      files.map(async (file) => {
+        const contents = await fs.readFile(file, "utf8");
+        return {filename: file, contents: jsyaml.load(contents)}
+      })
     );
-    return data.map(jsyaml.load);
+    return data;
   } catch (error) {
     core.setFailed(`Error loading data: ${error.message}`);
     throw error;
@@ -42047,21 +42049,28 @@ async function loadData(pathOrData) {
 async function validate() {
   try {
     const [data, schemas] = await Promise.all([
-      loadData(utils.parseInput("data", "String").value),
-      loadData(utils.parseInput("schemas", "String").value),
+      loadFiles(utils.parseInput("data", "String").value),
+      loadFiles(utils.parseInput("schemas", "String").value),
     ]);
 
     const ajv = new Ajv();
     addFormats(ajv);
-    const validate = ajv.compile(schemas.value);
-    const valid = validate(data.value);
+    const validate = ajv.compile(schemas[0].contents);
+    const validationArray = data.map((file) => {
+      validate(file.contents);
+      return {
+        filename: file.filename,
+        errors: validate.errors
+      }
+    });
 
-    if (!valid) {
-      core.setFailed(`Validation errors: ${JSON.stringify(validate.errors)}`);
+    if (!validationArray.every((validation) => validation.errors == null)) {
+      core.setFailed(`Validation errors: ${JSON.stringify(validationArray.filter((validation) => validation.errors != null))}`);
       core.setOutput("valid", false);
       core.setOutput("errors", JSON.stringify(validate.errors));
     } else {
       core.setOutput("valid", true);
+      core.info("Validation successful!")
     }
   } catch (error) {
     core.setFailed(`Failed to validate: ${error.message}`);
