@@ -61,18 +61,6 @@ inputs:
   comment:
     description: "#https://ajv.js.org/options.html#comment"
     required: false
-  formats:
-    description: "https://ajv.js.org/options.html#formats"
-    required: false
-  keywords:
-    description: "https://ajv.js.org/options.html#keywords"
-    required: false
-  logger:
-    description: "https://ajv.js.org/options.html#logger"
-    required: false
-  loadSchema:
-    description: "https://ajv.js.org/options.html#loadschema"
-    required: false
   removeAdditional:
     description: "https://ajv.js.org/options.html#removeadditional"
     required: false
@@ -112,9 +100,6 @@ inputs:
   messages:
     description: "https://ajv.js.org/options.html#messages"
     required: false
-  uriResolver:
-    description: "https://ajv.js.org/options.html#uriresolver"
-    required: false
   codeEs5:
     description: "https://ajv.js.org/options.html#code"
     required: false
@@ -127,13 +112,7 @@ inputs:
   codeSource:
     description: "https://ajv.js.org/options.html#code"
     required: false
-  codeProcess:
-    description: "https://ajv.js.org/options.html#code"
-    required: false
   codeOptimize:
-    description: "https://ajv.js.org/options.html#code"
-    required: false
-  codeRegExp:
     description: "https://ajv.js.org/options.html#code"
     required: false
 
