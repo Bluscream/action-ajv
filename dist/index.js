@@ -1859,34 +1859,44 @@ function Input(type, value) {
  */
 function parseInput(inputName, ...types) {
   const input = core.getInput(inputName);
-  for (const type of types) {
-    const _type = type.toLowerCase();
-    switch (_type) {
-      case "number":
-        const number = parseFloat(input);
-        if (!isNaN(number)) return Input(_type, number);
-        break;
-      case "boolean":
-        const lowerInput = input.toLowerCase();
-        if (lowerInput === "true") return Input(_type, true);
-        if (lowerInput === "false") return Input(_type, false);
-        break;
-      case "date":
-        const date = new Date(input);
-        if (!isNaN(date.getTime())) return Input(_type, date);
-        break;
-      case "json":
-        try {
-          return Input(_type, JSON.parse(input));
-        } catch {}
-        break;
-      case "string":
-        return Input(_type, input);
-        break;
-      default:
-        core.warning(`Unsupported type: ${type}`);
+
+  if (input != null) {
+    for (const type of types) {
+      const _type = type.toLowerCase();
+
+      switch (_type) {
+        case "integer":
+          const intNumber = parseInt(input);
+          if (!isNaN(intNumber)) return Input(_type, intNumber);
+          break;
+        case "float":
+          const floatNumber = parseFloat(input);
+          if (!isNaN(floatNumber)) return Input(_type, floatNumber);
+          break;
+        case "boolean":
+          const lowerInput = input.toLowerCase();
+          if (lowerInput === "true") return Input(_type, true);
+          if (lowerInput === "false") return Input(_type, false);
+          break;
+        case "date":
+          const date = new Date(input);
+          if (!isNaN(date.getTime())) return Input(_type, date);
+          break;
+        case "json":
+          try {
+            return Input(_type, JSON.parse(input));
+          } catch {}
+          break;
+        case "string":
+          return Input(_type, input);
+          break;
+        default:
+          core.warning(`Unsupported type: ${type}`);
+      }
+
     }
   }
+
   return null;
 }
 
@@ -42030,13 +42040,18 @@ const glob = __nccwpck_require__(5608);
 const utils = __nccwpck_require__(3510);
 const jsyaml = __nccwpck_require__(661);
 
+const OUPTUTS = {
+  valid: "valid",
+  errors: "errors",
+};
+
 async function loadFiles(pathOrData) {
   try {
     const files = await glob(pathOrData);
     const data = await Promise.all(
       files.map(async (file) => {
         const contents = await fs.readFile(file, "utf8");
-        return {filename: file, contents: jsyaml.load(contents)}
+        return { filename: file, contents: jsyaml.load(contents) };
       })
     );
     return data;
@@ -42048,29 +42063,84 @@ async function loadFiles(pathOrData) {
 
 async function validate() {
   try {
-    const [data, schemas] = await Promise.all([
+    const [data, schema] = await Promise.all([
       loadFiles(utils.parseInput("data", "String").value),
-      loadFiles(utils.parseInput("schemas", "String").value),
+      loadFiles(utils.parseInput("schema", "String").value),
     ]);
 
-    const ajv = new Ajv();
+    if (schema.length == 0) {
+      core.setFailed("Failed to load the schema");
+      core.setOutput(OUPTUTS.valid, false);
+      return;
+    }
+
+    if (data.length == 0) {
+      core.info("Nothing to validate");
+      core.setOutput(OUPTUTS.valid, true);
+      return;
+    }
+
+    const options = {
+      strict: utils.parseInput("strict", "boolean", "string"),
+      strictSchema: utils.parseInput("strictSchema", "boolean", "string"),
+      strictNumbers: utils.parseInput("strictNumbers", "boolean"),
+      strictTypes: utils.parseInput("strictTypes", "boolean", "string"),
+      strictTuples: utils.parseInput("strictTuples", "boolean", "string"),
+      strictRequired: utils.parseInput("strictRequired", "boolean", "string"),
+      allowUnionTypes: utils.parseInput("allowUnionTypes", "boolean"),
+      allowMatchingProperties: utils.parseInput("allowMatchingProperties","boolean"),
+      validateFormats: utils.parseInput("validateFormats", "boolean"),
+      allErrors: utils.parseInput("allErrors", "boolean"),
+      verbose: utils.parseInput("verbose", "boolean"),
+      discriminator: utils.parseInput("discriminator", "boolean"),
+      unicodeRegExp: utils.parseInput("unicodeRegExp", "boolean"),
+      timestamp: utils.parseInput("timestamp", "string"),
+      parseDate: utils.parseInput("parseDate", "boolean"),
+      allowDate: utils.parseInput("allowDate", "boolean"),
+      int32range: utils.parseInput("int32range", "boolean"),
+      $comment: utils.parseInput("comment", "boolean"),
+      removeAdditional: utils.parseInput("removeAdditional","boolean","string"),
+      useDefaults: utils.parseInput("useDefaults", "boolean", "string"),
+      coerceTypes: utils.parseInput("coerceTypes", "boolean", "string"),
+      meta: utils.parseInput("meta", "boolean", "json"),
+      validateSchema: utils.parseInput("validateSchema", "boolean", "string"),
+      addUsedSchema: utils.parseInput("addUsedSchema", "boolean"),
+      inlineRefs: utils.parseInput("inlineRefs", "boolean", "integer"),
+      passContext: utils.parseInput("passContext", "boolean"),
+      loopRequired: utils.parseInput("loopRequired", "integer"),
+      loopEnum: utils.parseInput("loopEnum", "integer"),
+      ownProperties: utils.parseInput("ownProperties", "boolean"),
+      multipleOfPrecision: utils.parseInput("multipleOfPrecision", "integer"),
+      messages: utils.parseInput("messages", "boolean"),
+      codeEs5: utils.parseInput("codeEs5", "boolean"),
+      codeEsm: utils.parseInput("codeEsm", "boolean"),
+      codeLines: utils.parseInput("codeLines", "boolean"),
+      codeSource: utils.parseInput("codeSource", "boolean"),
+      codeOptimize: utils.parseInput("codeOptimize", "boolean", "integer"),
+    };
+
+    const ajv = new Ajv(options);
     addFormats(ajv);
-    const validate = ajv.compile(schemas[0].contents);
+    const validate = ajv.compile(schema[0].contents);
     const validationArray = data.map((file) => {
       validate(file.contents);
       return {
         filename: file.filename,
-        errors: validate.errors
-      }
+        errors: validate.errors,
+      };
     });
 
     if (!validationArray.every((validation) => validation.errors == null)) {
-      core.setFailed(`Validation errors: ${JSON.stringify(validationArray.filter((validation) => validation.errors != null))}`);
-      core.setOutput("valid", false);
-      core.setOutput("errors", JSON.stringify(validate.errors));
+      core.setFailed(
+        `Validation errors: ${JSON.stringify(
+          validationArray.filter((validation) => validation.errors != null)
+        )}`
+      );
+      core.setOutput(OUPTUTS.valid, false);
+      core.setOutput(OUPTUTS.errors, JSON.stringify(validate.errors));
     } else {
-      core.setOutput("valid", true);
-      core.info("Validation successful!")
+      core.setOutput(OUPTUTS.valid, true);
+      core.info("Validation successful!");
     }
   } catch (error) {
     core.setFailed(`Failed to validate: ${error.message}`);
