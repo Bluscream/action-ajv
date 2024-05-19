@@ -6,6 +6,11 @@ const glob = require("glob-promise");
 const utils = require("@gh-actions-utils/inputs");
 const jsyaml = require("js-yaml");
 
+const OUPTUTS = {
+  valid: 'valid',
+  errors: 'errors',
+}
+
 async function loadFiles(pathOrData) {
   try {
     const files = await glob(pathOrData);
@@ -42,10 +47,10 @@ async function validate() {
 
     if (!validationArray.every((validation) => validation.errors == null)) {
       core.setFailed(`Validation errors: ${JSON.stringify(validationArray.filter((validation) => validation.errors != null))}`);
-      core.setOutput("valid", false);
-      core.setOutput("errors", JSON.stringify(validate.errors));
+      core.setOutput(OUPTUTS.valid, false);
+      core.setOutput(OUPTUTS.errors, JSON.stringify(validate.errors));
     } else {
-      core.setOutput("valid", true);
+      core.setOutput(OUPTUTS.valid, true);
       core.info("Validation successful!")
     }
   } catch (error) {
