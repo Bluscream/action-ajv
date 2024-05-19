@@ -1,6 +1,12 @@
 name: JSON Validation
 description: Validates JSON data against a schema.
 inputs:
+  schema:
+    description: "The schema file used for valiation."
+    required: true
+  data:
+    description: "The data files to be validated. Glob pattern is supported."
+    required: true
   strict:
     description: "https://ajv.js.org/options.html#strict"
     required: false
@@ -27,9 +33,6 @@ inputs:
     required: false
   validateFormats:
     description: "https://ajv.js.org/options.html#validateformats"
-    required: false
-  data:
-    description: "#https://ajv.js.org/options.html#data"
     required: false
   allErrors:
     description: "https://ajv.js.org/options.html#allerrors"
@@ -63,9 +66,6 @@ inputs:
     required: false
   keywords:
     description: "https://ajv.js.org/options.html#keywords"
-    required: false
-  schemas:
-    description: "https://ajv.js.org/options.html#schemas"
     required: false
   logger:
     description: "https://ajv.js.org/options.html#logger"

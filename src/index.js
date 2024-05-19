@@ -29,12 +29,12 @@ async function loadFiles(pathOrData) {
 
 async function validate() {
   try {
-    const [data, schemas] = await Promise.all([
+    const [data, schema] = await Promise.all([
       loadFiles(utils.parseInput("data", "String").value),
-      loadFiles(utils.parseInput("schemas", "String").value),
+      loadFiles(utils.parseInput("schema", "String").value),
     ]);
 
-    if (schemas.length == 0) {
+    if (schema.length == 0) {
       core.setFailed("Failed to load the schema");
       core.setOutput(OUPTUTS.valid, false);
       return;
@@ -48,7 +48,7 @@ async function validate() {
 
     const ajv = new Ajv();
     addFormats(ajv);
-    const validate = ajv.compile(schemas[0].contents);
+    const validate = ajv.compile(schema[0].contents);
     const validationArray = data.map((file) => {
       validate(file.contents);
       return {
