@@ -34,6 +34,18 @@ async function validate() {
       loadFiles(utils.parseInput("schemas", "String").value),
     ]);
 
+    if (schemas.length == 0) {
+      core.setFailed("Failed to load the schema");
+      core.setOutput(OUPTUTS.valid, false);
+      return;
+    }
+
+    if (data.length == 0) {
+      core.info("Nothing to validate");
+      core.setOutput(OUPTUTS.valid, true);
+      return;
+    }
+
     const ajv = new Ajv();
     addFormats(ajv);
     const validate = ajv.compile(schemas[0].contents);
