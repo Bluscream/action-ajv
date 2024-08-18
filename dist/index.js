@@ -42135,6 +42135,7 @@ async function validate() {
       };
     });
 
+    const ignoreErrors = utils.parseInput("ignoreErrors", "boolean") === true;
     if (!validationArray.every((validation) => validation.errors == null)) {
       core.setFailed(
         `Validation errors: ${JSON.stringify(
@@ -42142,6 +42143,16 @@ async function validate() {
         )}`
       );
       core.setOutput(OUPTUTS.valid, false);
+      if (ignoreErrors) {
+        core.setOutput(OUPTUTS.valid, true);
+      } else {
+        core.setFailed(
+          `Validation errors: ${JSON.stringify(
+            validationArray.filter((validation) => validation.errors != null)
+          )}`
+        );
+        core.setOutput(OUPTUTS.valid, false);
+      }
       core.setOutput(OUPTUTS.errors, JSON.stringify(validate.errors));
     } else {
       core.setOutput(OUPTUTS.valid, true);
@@ -42149,6 +42160,13 @@ async function validate() {
     }
   } catch (error) {
     core.setFailed(`Failed to validate: ${error.message}`);
+    const errorMessage = `Failed to validate: ${error.message}`;
+    if (ignoreErrors) {
+      core.setOutput(OUPTUTS.valid, true);
+      core.setOutput(OUPTUTS.errors, errorMessage);
+    } else {
+      core.setFailed(errorMessage);
+    }
   }
 }
 
