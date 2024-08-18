@@ -88,8 +88,10 @@ async function validate() {
     const ajv = new Ajv(options);
     addFormats(ajv);
     if (utils.parseInput("extraFormats", "boolean") === true) {
+      core.info("extraFormats is enabled, adding more formats for validation");
       ajv.addFormat("boolean", /^(true|false|0|1|yes|no|enabled|disabled|on|off)$/i); // Temporary solution until https://github.com/ajv-validator/ajv-formats/pull/103 is merged
     }
+    core.info("Starting validation");
     const validate = ajv.compile(schema[0].contents);
     const validationArray = data.map((file) => {
       validate(file.contents);
