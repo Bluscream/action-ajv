@@ -94,24 +94,36 @@ async function validate() {
     }
     core.info("Starting validation");
     const validate = ajv.compile(schema[0].contents);
-    const validationArray = data.map((file) => {
-      validate(file.contents);
-      return {
+    const validationArray = [];
+    data.forEach((file) => {
+      let errors;
+      try {
+        errors = validate(file.contents).errors;
+      } catch (error) {
+        core.error(JSON.stringify(error));
+        errors = [error.message];
+      }
+      validationArray.push({
         filename: file.filename,
-        errors: validate.errors,
-      };
+        errors: errors,
+      });
     });
-    
+
     if (!validationArray.every((validation) => validation.errors == null)) {
+      core.setFailed(
+        `Validation errors: ${JSON.stringify(
+          validationArray.filter((validation) => validation.errors != null)
+        )}`
+      );
       if (ignoreErrors) {
         core.setOutput(OUPTUTS.valid, true);
       } else {
+        core.setOutput(OUPTUTS.valid, false);
         core.setFailed(
           `Validation errors: ${JSON.stringify(
             validationArray.filter((validation) => validation.errors != null)
           )}`
         );
-        core.setOutput(OUPTUTS.valid, false);
       }
       core.setOutput(OUPTUTS.errors, JSON.stringify(validate.errors));
     } else {
@@ -119,10 +131,11 @@ async function validate() {
       core.info("Validation successful!");
     }
   } catch (error) {
-    const errorMessage = `Failed to validate: ${error.message}`;
+    core.error(JSON.stringify(error));
+    const errorMessage = `Action failed: ${error.message}`;
+    core.setOutput(OUPTUTS.errors, errorMessage);
     if (ignoreErrors) {
       core.setOutput(OUPTUTS.valid, true);
-      core.setOutput(OUPTUTS.errors, errorMessage);
     } else {
       core.setFailed(errorMessage);
     }
