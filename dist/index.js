@@ -42121,6 +42121,9 @@ async function validate() {
 
     const ajv = new Ajv(options);
     addFormats(ajv);
+    if (utils.parseInput("extraFormats", "boolean") === true) {
+      ajv.addFormat("boolean", /^(true|false|0|1|yes|no|enabled|disabled|on|off)$/i);
+    }
     const validate = ajv.compile(schema[0].contents);
     const validationArray = data.map((file) => {
       validate(file.contents);
