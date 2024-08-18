@@ -42124,7 +42124,7 @@ async function validate() {
     addFormats(ajv);
     if (utils.parseInput("extraFormats", "boolean") === true) {
       core.info("extraFormats is enabled, adding more formats for validation");
-      ajv.addFormat("boolean", /^(true|false|0|1|yes|no|enabled|disabled|on|off)$/i);
+      ajv.addFormat("boolean", "/^(true|false|0|1|yes|no|enabled|disabled|on|off)$/i");
     }
     core.info(JSON.stringify(ajv.opts));
     core.info("Starting validation");
