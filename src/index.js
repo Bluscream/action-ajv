@@ -28,6 +28,7 @@ async function loadFiles(pathOrData) {
 }
 
 async function validate() {
+  const ignoreErrors = utils.parseInput("ignoreErrors", "boolean") === true;
   try {
     const [data, schema] = await Promise.all([
       loadFiles(utils.parseInput("data", "String").value),
@@ -100,7 +101,7 @@ async function validate() {
         errors: validate.errors,
       };
     });
-    const ignoreErrors = utils.parseInput("ignoreErrors", "boolean") === true;
+    
     if (!validationArray.every((validation) => validation.errors == null)) {
       if (ignoreErrors) {
         core.setOutput(OUPTUTS.valid, true);
