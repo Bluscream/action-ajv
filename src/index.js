@@ -87,6 +87,7 @@ async function validate() {
 
     const ajv = new Ajv(options);
     addFormats(ajv);
+    ajv.addFormat("boolean", /^(true|false|0|1|yes|no|enabled|disabled|on|off)$/i); // Temporary solution until https://github.com/ajv-validator/ajv-formats/pull/103 is merged
     const validate = ajv.compile(schema[0].contents);
     const validationArray = data.map((file) => {
       validate(file.contents);
