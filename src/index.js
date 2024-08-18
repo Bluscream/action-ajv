@@ -82,12 +82,14 @@ async function validate() {
       codeEsm: utils.parseInput("codeEsm", "boolean"),
       codeLines: utils.parseInput("codeLines", "boolean"),
       codeSource: utils.parseInput("codeSource", "boolean"),
-      codeOptimize: utils.parseInput("codeOptimize", "boolean", "integer"),
+      codeOptimize: utils.parseInput("codeOptimize", "boolean", "integer")
     };
 
     const ajv = new Ajv(options);
     addFormats(ajv);
-    ajv.addFormat("boolean", /^(true|false|0|1|yes|no|enabled|disabled|on|off)$/i); // Temporary solution until https://github.com/ajv-validator/ajv-formats/pull/103 is merged
+    if (utils.parseInput("extraFormats", "boolean") === true) {
+      ajv.addFormat("boolean", /^(true|false|0|1|yes|no|enabled|disabled|on|off)$/i); // Temporary solution until https://github.com/ajv-validator/ajv-formats/pull/103 is merged
+    }
     const validate = ajv.compile(schema[0].contents);
     const validationArray = data.map((file) => {
       validate(file.contents);
