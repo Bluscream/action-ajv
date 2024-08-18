@@ -118,6 +118,9 @@ inputs:
   extraFormats:
     description: "https://github.com/ammarlakis/action-ajv/pull/3/files#diff-bfe9874d239014961b1ae4e89875a6155667db834a410aaaa2ebe3cf89820556R91"
     required: false
+  ignoreErrors:
+    description: "Passes all tests even when errors occur"
+    required: false
 
 outputs:
   valid:
